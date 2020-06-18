@@ -1,0 +1,36 @@
+doctype html
+html
+    include ./partials/cabecalho
+    body
+        .col-md-6.offset-md-3
+            .card.card-outline-secondary
+                .card-header.bg-dark.text-white
+                    h3.mb-0 RegMatri 1.0 - Sobre este projeto
+                .card-body
+                    .form-group
+                        b RegMatri&nbsp;
+                        | é uma plataforma simples de registo de matrículas automóveis de Portugal, com a seguintes funcionalidades:
+                        br
+                        br
+                        ul
+                            li Registo manual de ocorrência de matrículas (matrícula, rua, cidade, região, data, hora e imagem)
+                            li Registo automático com o reconhecimento de matrículas feito de forma automatizada a partir de imagens (apenas JPEG ou PNG).
+                            li Pesquisa das matrículas inseridas na base de dados, bem como a respetiva imagem da ocorrência
+                            li Autenticação (o registo de matrículas apenas é permitido a utilizadores autenticados)
+                        br
+                        p
+                            | Trata-se de um projeto desenvolvido no âmbito de unidade curricular de&nbsp;
+                            b Programação Web Avançada (2020)
+                            |, do&nbsp;
+                            b Mestrado em Tecnologias e Sistemas Informáticos Web&nbsp;
+                            | da&nbsp;
+                            b Universidade Aberta.
+                        p
+                            | Mais informações sobre este curso podem ser consultadas&nbsp;
+                            a(href="http://www2.uab.pt/guiainformativo/detailcursos.php?curso=63") aqui
+                        p
+                            | Projeto desenvolvido por
+                            b &nbsp;André Santo&nbsp;
+                            | sobre a orientação do
+                            b &nbsp;Professor Ricardo Baptista.
+        include ./partials/rodape

@@ -1,0 +1,67 @@
+doctype html
+html
+    include ./partials/cabecalho
+    body
+        .col-md-6.offset-md-3
+            div(class="alert alert-danger" role="alert" style="display: none;" id="erro")
+                button(type="button" class="close" data-dismiss="alert" aria-label="Close")
+                    span(aria-hidden="true") ×
+                strong Erro!&nbsp;
+                span(id='msgErro')
+            span#formRegister.anchor
+            .card.card-outline-secondary
+                .card-header.bg-dark.text-white
+                    h3.mb-0 Registar Ocorrência de Matrícula Automaticamente
+                .card-body
+                    form.form(role='form', autocomplete='off' method="post" action="/registar-matriculas-auto" enctype="multipart/form-data")
+                        .form-group
+                            label(for="rua" class="font-weight-bold") Rua/Avenida/Edifício/etc.
+                            input(type="text", id="rua" placeholder="Rua/Edifício/etc." name="rua", class="form-control input-sm")
+                        .form-row
+                            .form-group.col-md-6
+                                label(for="cidade" class="font-weight-bold") Cidade
+                                select(class="selectpicker form-control" data-live-search="true" name="cidade", id="cidade")
+                                    each cidade in regioes.cidades
+                                        option=cidade
+                            .form-group.col-md-6
+                                label(for="regiao" class="font-weight-bold") Região
+                                select(class="selectpicker form-control" data-live-search="true", name="regiao", id="regiao")
+                                    each regiao in regioes.regioes
+                                        option=regiao
+                        .form-group
+                            label(for="data" class="font-weight-bold") Data da ocorrência
+                            div(class="input-group mb-3")
+                                div(class="input-group-prepend")
+                                    span(class="input-group-text" id="basic-addon1")
+                                        i(class="fa fa-calendar")
+                                input(type="text" name="data" id="data" class="form-control datetimepicker-input" required="true")
+
+                        .form-group
+                            div.custom-file
+                                input(type="file" class="custom-file-input" id="imagem" name="imagem" required="true")
+                                label(class="custom-file-label" for="imagem") Imagem da ocorrência
+                        .form-group
+                            button.btn.btn-success.btn-lg.float-right.font-weight-bold(type='submit') Registar
+        include ./partials/rodape
+        script.
+            var datepicker = $(".datetimepicker-input")
+            datepicker.datetimepicker({
+                format: 'Y-m-d H:i',
+                lang: 'pt',
+                step: 1
+            });
+
+            $('#imagem').on('change', function () {
+                var fileName = $(this).val();
+                $(this).next('.custom-file-label').html(fileName);
+            })
+
+            if (#{erro}) {
+                $('#msgErro').text("#{mensagem}")
+                $('#erro').show();
+                window.setTimeout(function () {
+                    $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                        $(this).remove();
+                    });
+                }, 10000);
+            }

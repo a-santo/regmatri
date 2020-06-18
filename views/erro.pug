@@ -1,0 +1,15 @@
+doctype html
+html
+    include ./partials/cabecalho
+    body
+        .col-md-6.offset-md-3
+            span#formRegister.anchor
+            .card.card-outline-secondary
+                .card-header.bg-dark.text-white
+                    div.d-inline-block
+                        h3.mb-0.font-weight-bold ERRO!
+                    div.d-inline-block.float-right
+                        i(class="fa fa-exclamation-triangle fa-2x" aria-hidden="true")
+                .card-body
+                    h4(class="font-weight-bold" style="color:red;") #{erro}
+        include ./partials/rodape

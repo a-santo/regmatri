@@ -1,0 +1,104 @@
+doctype html
+html
+    include ./partials/cabecalho
+    body
+        .col-md-6.offset-md-3
+            span#formRegister.anchor
+            .card.card-outline-secondary
+                .card-header.bg-dark.text-white
+                    h3.mb-0 Resultados
+                .card-body
+                    table(id='tabela-info' class='table')
+                        thead
+                            tr
+                                th Rua
+                                th Cidade
+                                th Região
+                                th Data e hora da ocorrência
+                        tbody
+                            tr
+                                td
+                                    = dados.rua
+                                td
+                                    = dados.cidade
+                                td
+                                    = dados.regiao
+                                td
+                                    = dados.data
+                    table(id='tabela' class='table')
+                        thead
+                            tr
+                                th Matricula
+                                th Certeza (%)
+                                th
+                            tbody
+                                each matricula in matriculas
+                                    tr
+                                        td.matricula
+                                            = matricula.matricula
+                                        td
+                                            = matricula.certeza
+                                            |%
+                                        td
+                                            button.btn.btn-success.btn-sm.float-right.font-weight-bold.btn-selecionar Selecionar
+        include ./partials/rodape
+    script.
+        $('#tabela').footable()
+        $(document).on("click", ".btn-selecionar", function() {
+            const matricula = $(this).closest("tr").find('td.matricula').text()
+            const rua = '#{dados.rua}'
+            const cidade = '#{dados.cidade}'
+            const regiao = '#{dados.regiao}'
+            const data = '#{dados.data}'
+            const imagem = '#{imagem}'
+            Swal.fire({
+                title: 'Tem a certeza?',
+                html: `Será adicionada a seguinte matrícula: <b>${matricula}</b>, com as seguintes informações: <hr><br><span class="float-left"><b>Rua:</b> ${rua !== '' ? rua : 'Sem registo'}</span><br><span class="float-left"><b>Cidade:</b> ${cidade !== '' ? cidade : 'Sem registo'}</span><br><span class="float-left"><b>Região:</b> ${regiao !== '' ? regiao : 'Sem registo'}</span><br><span class="float-left"><b>Data da ocorrência:</b> ${data !== '' ? data : 'Sem registo'}</span>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Não',
+                confirmButtonText: 'Sim'
+            }).then((result) => {
+                console.log(result)
+                if(result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "registar/",
+                        data: {
+                            matricula: matricula,
+                            rua: rua !== '' ? rua : null,
+                            cidade: cidade ? cidade : null,
+                            regiao: regiao ? regiao : null,
+                            data: data,
+                            imagem: imagem
+
+                        },
+                        cache: false,
+                        success: function (response) {
+                            swal.fire(
+                                "Sucesso!",
+                                "A matrícula foi registada!",
+                                "success"
+                            )
+                        },
+                        failure: function (response) {
+                            swal.fire(
+                                "Erro",
+                                "Ocorreu um erro ao tentar registar a matrícula.",
+                                "error"
+                            )
+                        }
+                    })
+                } else {
+                    swal.fire(
+                        "Cancelado",
+                        "A matrícula e respectivos dados NÃO foram registados!",
+                        "error"
+                    )
+                }
+
+            })
+        })
+

@@ -1,0 +1,111 @@
+doctype html
+html
+    include ./partials/cabecalho
+    body
+        div(id="modalImagem" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true")
+            div.modal-dialog.modal-xl
+                 div.modal-content
+                     div.modal-body.text-center
+                         img(src="#" class="img-responsive" id='imagem' style="max-width: 100%;")
+                     div.modal-footer
+                        button(type="button" class="btn btn-primary" data-dismiss="modal") Fechar
+        .col-md-6.offset-md-3
+            .card.card-outline-secondary
+                .card-header.bg-dark.text-white
+                    h3.mb-0 Pesquisar matrícula
+                .card-body
+                    form.form(id="pesquisa")
+                        .form-group
+                            label(for="matricula" class="font-weight-bold") Matricula do veículo
+                            input(type="text", id="matricula" placeholder="" name="matricula", required="true" class="form-control input-sm")
+                        .form-row
+                            .form-group.col-md-6
+                                label(for="cidade" class="font-weight-bold") Cidade
+                                select(class="selectpicker form-control" data-live-search="true" name="cidade", id="cidade")
+                                    option(disabled selected value) -- Escolha uma Cidade (Opcional) --
+                                    each cidade in regioes.cidades
+                                        option=cidade
+                            .form-group.col-md-6
+                                label(for="regiao" class="font-weight-bold") Região
+                                select(class="selectpicker form-control" data-live-search="true", name="regiao", id="regiao")
+                                    option(disabled selected value) -- Escolha uma Região (Opcional) --
+                                    each regiao in regioes.regioes
+                                        option=regiao
+                            .form-group.col-md-6
+                                label(for="data_de" class="font-weight-bold") De:
+                                div(class="input-group mb-3")
+                                    div(class="input-group-prepend")
+                                        span(class="input-group-text")
+                                            i(class="fa fa-calendar")
+                                    input(type="text" name="data_a" id="data_de" class="form-control datetimepicker-input")
+                            .form-group.col-md-6
+                                label(for="data_a" class="font-weight-bold") A:
+                                div(class="input-group mb-3")
+                                    div(class="input-group-prepend")
+                                        span(class="input-group-text")
+                                            i(class="fa fa-calendar")
+                                    input(type="text" name="data_a" id="data_a" class="form-control datetimepicker-input")
+                        .form-group
+                            button.btn.btn-success.btn-lg.float-right.font-weight-bold Pesquisar
+
+            div(class="card card-outline-secondary" style="display: none;" id="divTabela")
+                .card-header
+                    h3.mb-0 Resultados
+                .card-body
+                    table(id='tabela' class='table')
+        include ./partials/rodape
+    script.
+        var datepicker = $(".datetimepicker-input")
+        datepicker.datetimepicker({
+            format: 'Y-m-d H:i',
+            lang: 'pt',
+            step: 1
+        });
+        $('#pesquisa').submit(function (e) {
+            e.preventDefault();
+            var matricula = $('#matricula');
+            var cidade = $('#cidade');
+            var regiao = $('#regiao');
+            var de = $('#data_de');
+            var ate = $('#data_a')
+            $.ajax({
+                url: "pesquisar/",
+                type: "POST",
+                data: {
+                    matricula: matricula.val(),
+                    cidade: cidade.val(),
+                    regiao: regiao.val(),
+                    de: de.val(),
+                    ate: ate.val()
+                },
+                dataType: "json",
+                success: function (resultado) {
+                    criarTabela(resultado, matricula.val())
+                }
+            });
+        });
+
+        $(document).on("click", ".imagem", function() {
+            console.log($(this).attr("data-imagem"))
+            $('#imagem').attr('src', 'imagens/' + $(this).attr("data-imagem"));
+            $('#modalImagem').modal();
+        });
+
+        function criarTabela(dados, matricula) {
+            var tabela = $('#tabela')
+            tabela.html('');
+            var html = "<thead><tr><th>Matricula</th><th>Rua</th><th>Cidade</th><th>Região</th><th>Data da ocorrência</th><th>Imagem</th></tr></thead>"
+            if(dados.length === 0) {
+                html += "<tbody><tr><td>Não foram encontradas ocorrências</td></tr></tbody>"
+            } else {
+                html += "<tbody>"
+                for(var i = 0; i < dados.length; i++) {
+                    html += `<tr><td>${matricula}</td><td>${dados[i].rua}</td><td>${dados[i].cidade}</td><td>${dados[i].regiao}</td><td>${dados[i].hora}</td><td><button type="button" class="btn btn-primary btn-sm imagem" data-imagem="${dados[i].imagem}">Ver</button></td></tr>`
+                }
+                html += "</tbody>"
+            }
+            tabela.html(html)
+            tabela.footable();
+            $('#divTabela').show(100)
+        }
+

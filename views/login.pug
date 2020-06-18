@@ -1,0 +1,29 @@
+doctype html
+html
+    include ./partials/cabecalho
+        link(rel='stylesheet', href='../assets/css/login.css')
+    body
+        .col-md-6.offset-md-3
+            .card.card-outline-secondary
+                .card-header.bg-dark.text-white
+                    h3.mb-0 Iniciar Sessão
+                .card-body
+                    form(class="form-signin" method="post" action="/login")
+                        .form-group
+                            label(for="usernameBox" class="sr-only") Nome de utilizador
+                            input(type="text" name="username" id="usernameBox" class="form-control" placeholder="Nome de utilizador" required autofocus)
+                        .form-group
+                            label(for="passwordBox" class="sr-only") Palavra passe
+                            input(type="password" name="password" id="passwordBox" class="form-control" placeholder="Palavra passe" required)
+                        .form-group.centered-form
+                            button.btn.btn-success.btn-lg.font-weight-bold.float-right Iniciar sessão
+        include ./partials/rodape
+    script.
+        const erro = '' + #{erro} + ''
+        if (erro !== '0') {
+            swal.fire(
+                "Erro",
+                "Não foi possível iniciar sessão com a informação fornecida. Por favor verifique os dados e tente novamente!",
+                "error"
+            )
+        }
